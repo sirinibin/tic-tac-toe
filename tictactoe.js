@@ -15,6 +15,7 @@ $boardState = [
         ""
     ]
 ];
+$game_over=false;
 
 $(document).ready(function () {
 
@@ -25,13 +26,16 @@ $(document).ready(function () {
 
 });
 function markCell($id, $i, $j, $playerUnit) {
+
+
+    if ($boardState[$i][$j]||$game_over) {
+        return;
+    }
+
     $('#' + $id).html($playerUnit);
     // $("#"+$id).disable();
     // $("#"+$id).unbind("onclick");
 
-    if ($boardState[$i][$j]) {
-        return;
-    }
     $boardState[$i][$j] = $playerUnit;
 
     console.log($boardState);
@@ -72,11 +76,13 @@ function getNextMove($playerUnit) {
                 if (data.drawn) {
                     console.log("Game drawn");
                     $("#result").html("RESULT:Game drawn <button  onclick='restart();' >RESTART</button>");
+                    $game_over=true;
                 } else {
                     $("#result").html("RESULT:'" + data.winner + "' Won the game <button  onclick='restart();' >RESTART</button> ");
                     // console.log("Winnder:" + data.winner);
                     // console.log("Positions:" + data.positions);
                     markWinPositions(data);
+                    $game_over=true;
 
                 }
 
@@ -127,6 +133,7 @@ function restart() {
         ]
     ];
 
+    $game_over=false;
     updateBoard();
     $("#result").html('');
 }
