@@ -16,6 +16,7 @@ $boardState = [
     ]
 ];
 $game_over=false;
+$processing=false;
 
 $(document).ready(function () {
 
@@ -28,13 +29,12 @@ $(document).ready(function () {
 function markCell($id, $i, $j, $playerUnit) {
 
 
-    if ($boardState[$i][$j]||$game_over) {
+    if ($boardState[$i][$j]||$game_over||$processing) {
         return;
     }
 
     $('#' + $id).html($playerUnit);
-    // $("#"+$id).disable();
-    // $("#"+$id).unbind("onclick");
+
 
     $boardState[$i][$j] = $playerUnit;
 
@@ -63,6 +63,7 @@ function updateBoard() {
 }
 function getNextMove($playerUnit) {
 
+    $processing=true;
 
     $.post("/nextmove",
         {
@@ -70,6 +71,7 @@ function getNextMove($playerUnit) {
             playerUnit: $playerUnit
         },
         function (data, status) {
+            $processing=false;
 
             if (data.game_over) {
 
